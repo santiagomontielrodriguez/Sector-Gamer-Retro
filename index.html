@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sector Gamer Retro</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323:wght@400&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --neon-green: #00ff41;
+    --neon-cyan: #00f5ff;
+    --neon-pink: #ff006e;
+    --neon-yellow: #ffdd00;
+    --neon-orange: #ff6b00;
+    --dark: #050510;
+    --dark2: #0a0a1e;
+    --grid: rgba(0,245,255,0.05);
+    --glow-green: 0 0 10px #00ff41, 0 0 30px #00ff41, 0 0 60px #00ff41;
+    --glow-cyan: 0 0 10px #00f5ff, 0 0 30px #00f5ff;
+    --glow-pink: 0 0 10px #ff006e, 0 0 30px #ff006e;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background-color: var(--dark);
+    color: #e0e0ff;
+    font-family: 'VT323', monospace;
+    font-size: 18px;
+    overflow-x: hidden;
+    cursor: crosshair;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.15) 2px,rgba(0,0,0,0.15) 4px);
+    pointer-events: none;
+    z-index: 9999;
+  }
+  body::after {
+    content: '';
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-image: linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+  @keyframes flicker { 0%,90%,100%{opacity:1} 91%{opacity:0.8} 92%{opacity:1} 95%{opacity:0.7} 96%{opacity:1} }
+  @keyframes blink { 50%{opacity:0} }
+  @keyframes pulse { 0%,100%{box-shadow:0 0 8px var(--neon-cyan)} 50%{box-shadow:0 0 25px var(--neon-cyan),0 0 50px var(--neon-cyan)} }
+  @keyframes slideIn { from{transform:translateY(-20px);opacity:0} to{transform:translateY(0);opacity:1} }
+  @keyframes marquee { from{transform:translateX(100vw)} to{transform:translateX(-100%)} }
+
+  header {
+    position: relative; z-index: 10;
+    text-align: center; padding: 40px 20px 20px;
+    border-bottom: 2px solid var(--neon-cyan);
+    background: linear-gradient(180deg,rgba(0,245,255,0.05) 0%,transparent 100%);
+  }
+  .logo-pixel {
+    font-family: 'Press Start 2P', cursive;
+    font-size: clamp(16px,4vw,36px);
+    color: var(--neon-green);
+    text-shadow: var(--glow-green);
+    letter-spacing: 2px;
+    animation: flicker 3s infinite;
+    line-height: 1.6;
+  }
+  .logo-sub {
+    font-family: 'Orbitron', sans-serif;
+    font-size: clamp(9px,2vw,13px);
+    color: var(--neon-cyan);
+    letter-spacing: 8px;
+    margin-top: 8px;
+    text-shadow: var(--glow-cyan);
+  }
+  .pixel-stars { color:var(--neon-yellow);font-size:20px;text-shadow:0 0 8px var(--neon-yellow);margin:10px 0;animation:blink 1.5s step-start infinite; }
+
+  nav { position:sticky;top:0;z-index:100;background:rgba(5,5,16,0.97);border-bottom:2px solid var(--neon-pink);box-shadow:0 0 20px rgba(255,0,110,0.3); }
+  .nav-ticker { background:var(--neon-pink);color:var(--dark);font-family:'Press Start 2P',cursive;font-size:9px;padding:4px 0;overflow:hidden;white-space:nowrap; }
+  .ticker-content { display:inline-block;animation:marquee 30s linear infinite; }
+  .nav-links { display:flex;flex-wrap:wrap;justify-content:center;gap:2px;padding:8px 10px; }
+  .nav-links a { font-family:'Press Start 2P',cursive;font-size:7px;color:var(--neon-cyan);text-decoration:none;padding:8px 10px;border:1px solid rgba(0,245,255,0.3);transition:all 0.2s; }
+  .nav-links a:hover { background:var(--neon-cyan);color:var(--dark);box-shadow:var(--glow-cyan);transform:translateY(-2px); }
+
+  .hero { position:relative;z-index:1;min-height:300px;display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:60px 20px;overflow:hidden; }
+  .hero-bg-text { position:absolute;font-family:'Press Start 2P',cursive;font-size:180px;color:rgba(0,255,65,0.03);user-select:none;top:50%;left:50%;transform:translate(-50%,-50%);white-space:nowrap; }
+  .hero h1 { font-family:'Press Start 2P',cursive;font-size:clamp(14px,3vw,26px);color:var(--neon-yellow);text-shadow:0 0 20px var(--neon-yellow);margin-bottom:20px;animation:slideIn 0.8s ease;line-height:1.8; }
+  .hero p { font-size:clamp(16px,2.5vw,22px);color:#aaa;max-width:700px;line-height:1.5; }
+  .btn-hero { display:inline-block;margin-top:30px;font-family:'Press Start 2P',cursive;font-size:11px;color:var(--dark);background:var(--neon-green);padding:14px 28px;text-decoration:none;border:none;cursor:pointer;box-shadow:var(--glow-green);transition:all 0.2s;letter-spacing:2px; }
+  .btn-hero:hover { background:var(--neon-cyan);box-shadow:var(--glow-cyan);transform:scale(1.05); }
+
+  .search-section { position:relative;z-index:1;background:linear-gradient(135deg,rgba(0,245,255,0.05),rgba(255,0,110,0.05));border-top:1px solid rgba(0,245,255,0.2);border-bottom:1px solid rgba(0,245,255,0.2);padding:50px 20px;text-align:center; }
+  .section-title { font-family:'Press Start 2P',cursive;font-size:clamp(9px,2vw,14px);margin-bottom:30px;display:flex;align-items:center;justify-content:center;gap:15px; }
+  .section-title .bracket { color:var(--neon-pink);text-shadow:var(--glow-pink); }
+  .search-bar { display:flex;max-width:700px;margin:0 auto 20px;border:2px solid var(--neon-cyan);box-shadow:var(--glow-cyan);animation:pulse 2s infinite; }
+  .search-bar input { flex:1;background:rgba(0,0,0,0.7);border:none;outline:none;padding:15px 20px;font-family:'VT323',monospace;font-size:22px;color:var(--neon-green);caret-color:var(--neon-green); }
+  .search-bar input::placeholder { color:rgba(0,255,65,0.3); }
+  .search-bar button { background:var(--neon-cyan);border:none;padding:0 25px;font-family:'Press Start 2P',cursive;font-size:9px;color:var(--dark);cursor:pointer;transition:all 0.2s;letter-spacing:1px; }
+  .search-bar button:hover { background:var(--neon-green); }
+  .search-tags { display:flex;flex-wrap:wrap;justify-content:center;gap:8px;max-width:700px;margin:0 auto; }
+  .search-tags span { font-family:'Press Start 2P',cursive;font-size:7px;padding:6px 10px;border:1px solid rgba(0,245,255,0.3);color:var(--neon-cyan);cursor:pointer;transition:all 0.2s; }
+  .search-tags span:hover { background:rgba(0,245,255,0.1);border-color:var(--neon-cyan); }
+
+  .section { position:relative;z-index:1;padding:60px 20px;max-width:1300px;margin:0 auto; }
+  .section-header { display:flex;align-items:center;gap:15px;margin-bottom:35px;border-bottom:1px solid rgba(0,245,255,0.2);padding-bottom:15px; }
+  .section-icon { font-size:36px;animation:blink 2s step-start infinite; }
+  .section-label .title { font-family:'Press Start 2P',cursive;font-size:clamp(10px,2vw,14px);color:var(--neon-yellow);text-shadow:0 0 10px var(--neon-yellow);display:block; }
+  .section-label .sub { font-family:'Press Start 2P',cursive;font-size:0.55em;color:var(--neon-cyan);letter-spacing:3px;display:block;margin-top:5px; }
+
+  .cards-grid { display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:20px; }
+  .card { background:rgba(0,0,0,0.6);border:1px solid rgba(0,245,255,0.2);padding:20px;transition:all 0.3s;position:relative;overflow:hidden; }
+  .card::before { content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:var(--neon-cyan); }
+  .card:hover { border-color:var(--neon-cyan);box-shadow:0 0 20px rgba(0,245,255,0.2);transform:translateY(-4px); }
+  .card.pink::before { background:var(--neon-pink); }
+  .card.pink:hover { border-color:var(--neon-pink);box-shadow:0 0 20px rgba(255,0,110,0.2); }
+  .card.green::before { background:var(--neon-green); }
+  .card.green:hover { border-color:var(--neon-green);box-shadow:0 0 20px rgba(0,255,65,0.2); }
+  .card.yellow::before { background:var(--neon-yellow); }
+  .card.yellow:hover { border-color:var(--neon-yellow);box-shadow:0 0 20px rgba(255,221,0,0.2); }
+  .card.orange::before { background:var(--neon-orange); }
+  .card.orange:hover { border-color:var(--neon-orange);box-shadow:0 0 20px rgba(255,107,0,0.2); }
+  .card-icon { font-size:42px;margin-bottom:12px; }
+  .card h3 { font-family:'Press Start 2P',cursive;font-size:9px;color:var(--neon-cyan);margin-bottom:10px;line-height:1.6; }
+  .card.pink h3 { color:var(--neon-pink); }
+  .card.green h3 { color:var(--neon-green); }
+  .card.yellow h3 { color:var(--neon-yellow); }
+  .card.orange h3 { color:var(--neon-orange); }
+  .card p { color:#aaa;font-size:16px;line-height:1.4;margin-bottom:15px; }
+  .card-link { font-family:'Press Start 2P',cursive;font-size:7px;color:var(--neon-cyan);text-decoration:none;border-bottom:1px solid var(--neon-cyan);padding-bottom:2px;transition:all 0.2s;display:inline-block; }
+  .card.pink .card-link { color:var(--neon-pink);border-color:var(--neon-pink); }
+  .card.green .card-link { color:var(--neon-green);border-color:var(--neon-green); }
+  .card.yellow .card-link { color:var(--neon-yellow);border-color:var(--neon-yellow); }
+  .card.orange .card-link { color:var(--neon-orange);border-color:var(--neon-orange); }
+  .card-link:hover { opacity:0.7; }
+
+  .stores-grid { display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:15px; }
+  .store-btn { display:flex;align-items:center;gap:12px;padding:18px 20px;background:rgba(0,0,0,0.5);border:1px solid rgba(0,245,255,0.25);text-decoration:none;transition:all 0.3s;position:relative; }
+  .store-btn::after { content:'▶';position:absolute;right:15px;color:rgba(0,245,255,0.3);font-size:12px;transition:all 0.3s; }
+  .store-btn:hover { border-color:var(--neon-cyan);box-shadow:var(--glow-cyan);transform:translateX(5px); }
+  .store-btn:hover::after { right:10px;color:var(--neon-cyan); }
+  .store-icon { font-size:30px; }
+  .store-name { font-family:'Press Start 2P',cursive;font-size:8px;color:var(--neon-cyan);display:block;margin-bottom:4px; }
+  .store-desc { font-size:14px;color:#777; }
+
+  .yt-grid { display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px; }
+  .yt-card { background:rgba(0,0,0,0.6);border:1px solid rgba(255,0,110,0.3);transition:all 0.3s;overflow:hidden; }
+  .yt-card:hover { border-color:var(--neon-pink);box-shadow:var(--glow-pink);transform:translateY(-3px); }
+  .yt-thumb { background:linear-gradient(135deg,#1a0008,#0d0020);height:150px;display:flex;align-items:center;justify-content:center;font-size:60px;position:relative; }
+  .yt-thumb::after { content:'▶';position:absolute;font-size:40px;color:rgba(255,0,110,0.8);text-shadow:var(--glow-pink); }
+  .yt-info { padding:15px; }
+  .yt-info h4 { font-family:'Press Start 2P',cursive;font-size:8px;color:#e0e0ff;margin-bottom:8px;line-height:1.6; }
+  .yt-info p { font-size:14px;color:#777;margin-bottom:12px; }
+  .yt-btn { display:inline-block;font-family:'Press Start 2P',cursive;font-size:7px;background:#ff0000;color:white;padding:8px 14px;text-decoration:none;transition:all 0.2s; }
+  .yt-btn:hover { background:#cc0000; }
+
+  .news-list { display:flex;flex-direction:column;gap:15px; }
+  .news-item { display:flex;gap:20px;background:rgba(0,0,0,0.5);border:1px solid rgba(0,245,255,0.15);padding:20px;transition:all 0.3s;align-items:flex-start; }
+  .news-item:hover { border-color:var(--neon-cyan);box-shadow:0 0 15px rgba(0,245,255,0.1); }
+  .news-badge { font-family:'Press Start 2P',cursive;font-size:7px;padding:5px 8px;background:var(--neon-pink);color:var(--dark);white-space:nowrap;flex-shrink:0; }
+  .news-badge.hot { background:var(--neon-orange); }
+  .news-badge.new { background:var(--neon-green); }
+  .news-content h4 { font-family:'Press Start 2P',cursive;font-size:9px;color:var(--neon-yellow);margin-bottom:8px;line-height:1.6; }
+  .news-content p { font-size:16px;color:#999;line-height:1.4; }
+
+  .review-form { background:rgba(0,0,0,0.5);border:1px solid rgba(0,255,65,0.3);padding:30px;margin-top:30px; }
+  .review-form h4 { font-family:'Press Start 2P',cursive;font-size:10px;color:var(--neon-green);margin-bottom:20px;text-shadow:0 0 10px var(--neon-green); }
+  .form-row { display:flex;gap:15px;flex-wrap:wrap;margin-bottom:15px; }
+  .form-field { flex:1;min-width:200px; }
+  .form-field label { display:block;font-family:'Press Start 2P',cursive;font-size:7px;color:var(--neon-cyan);margin-bottom:6px; }
+  .form-field input,.form-field textarea,.form-field select { width:100%;background:rgba(0,0,0,0.7);border:1px solid rgba(0,245,255,0.3);outline:none;padding:10px 14px;font-family:'VT323',monospace;font-size:18px;color:var(--neon-green);caret-color:var(--neon-green);transition:border-color 0.2s; }
+  .form-field input:focus,.form-field textarea:focus,.form-field select:focus { border-color:var(--neon-green); }
+  .form-field select option { background:var(--dark2); }
+  .form-field textarea { height:120px;resize:vertical; }
+  .stars-select { display:flex;gap:5px;margin-top:5px; }
+  .stars-select span { font-size:28px;cursor:pointer;color:#444;transition:color 0.1s; }
+  .stars-select span.active { color:var(--neon-yellow);text-shadow:0 0 8px var(--neon-yellow); }
+  .btn-submit { font-family:'Press Start 2P',cursive;font-size:9px;background:transparent;border:2px solid var(--neon-green);color:var(--neon-green);padding:14px 28px;cursor:pointer;transition:all 0.2s;letter-spacing:2px;margin-top:10px; }
+  .btn-submit:hover { background:var(--neon-green);color:var(--dark);box-shadow:var(--glow-green); }
+
+  .memes-grid { display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:20px; }
+  .meme-card { background:rgba(0,0,0,0.6);border:1px solid rgba(255,221,0,0.2);overflow:hidden;transition:all 0.3s; }
+  .meme-card:hover { border-color:var(--neon-yellow);box-shadow:0 0 20px rgba(255,221,0,0.2);transform:rotate(0.5deg) scale(1.02); }
+  .meme-img { height:160px;background:linear-gradient(135deg,#1a1200,#0d0d00);display:flex;align-items:center;justify-content:center;font-size:70px;border-bottom:1px solid rgba(255,221,0,0.2); }
+  .meme-caption { padding:12px;font-family:'Press Start 2P',cursive;font-size:7px;color:var(--neon-yellow);line-height:1.8;text-align:center; }
+
+  .pixel-sep { display:flex;align-items:center;justify-content:center;gap:10px;padding:10px 20px;font-family:'Press Start 2P',cursive;font-size:8px;color:rgba(0,245,255,0.2);overflow:hidden; }
+  .pixel-sep::before,.pixel-sep::after { content:'';flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(0,245,255,0.2)); }
+  .pixel-sep::after { background:linear-gradient(90deg,rgba(0,245,255,0.2),transparent); }
+  .full-sep { position:relative;z-index:1;height:2px;background:linear-gradient(90deg,transparent,var(--neon-pink),transparent); }
+
+  footer { position:relative;z-index:1;background:rgba(0,0,0,0.8);border-top:2px solid var(--neon-pink);padding:40px 20px;text-align:center; }
+  .footer-logo { font-family:'Press Start 2P',cursive;font-size:14px;color:var(--neon-green);text-shadow:var(--glow-green);margin-bottom:15px; }
+  .footer-links { display:flex;justify-content:center;flex-wrap:wrap;gap:15px;margin-bottom:20px; }
+  .footer-links a { font-family:'Press Start 2P',cursive;font-size:7px;color:var(--neon-cyan);text-decoration:none;opacity:0.7;transition:opacity 0.2s; }
+  .footer-links a:hover { opacity:1; }
+  .footer-copy { font-size:14px;color:#444;margin-top:10px; }
+
+  .scroll-top { position:fixed;bottom:30px;right:30px;z-index:100;font-family:'Press Start 2P',cursive;font-size:8px;background:var(--neon-pink);color:var(--dark);border:none;padding:12px;cursor:pointer;box-shadow:var(--glow-pink);transition:all 0.2s;display:none; }
+  .scroll-top:hover { transform:translateY(-3px); }
+  .scroll-top.visible { display:block; }
+  @media(max-width:600px){ .nav-links a{font-size:6px;padding:6px 7px} .stores-grid{grid-template-columns:1fr 1fr} }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="pixel-stars">★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★</div>
+  <div class="logo-pixel">SECTOR GAMER RETRO</div>
+  <div class="logo-sub">// EL UNIVERSO DE LOS VIDEOJUEGOS //</div>
+  <div class="pixel-stars">★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★ ★</div>
+</header>
+
+<nav>
+  <div class="nav-ticker">
+    <span class="ticker-content">
+      &nbsp;⚡ NOVEDADES: Nuevo trailer de GTA VI filtrado &nbsp;|&nbsp; 🔥 Nintendo Direct confirmado &nbsp;|&nbsp; 💥 PS5 Pro agota stock &nbsp;|&nbsp; 🎮 Xbox Game Pass suma 5 juegos nuevos &nbsp;|&nbsp; 👾 Streamer bate récord en Elden Ring &nbsp;|&nbsp; 🕹️ Donkey Kong Country regresa a Nintendo Switch Online &nbsp;|&nbsp;
+    </span>
+  </div>
+  <div class="nav-links">
+    <a href="#buscar">🔍 BUSCAR</a>
+    <a href="#personajes">👤 PERSONAJES</a>
+    <a href="#juegos">🎮 JUEGOS</a>
+    <a href="#desarrolladores">👨‍💻 DEVS</a>
+    <a href="#estudios">🏢 ESTUDIOS</a>
+    <a href="#empresas">🏭 EMPRESAS</a>
+    <a href="#curiosidades">💡 CURIOSIDADES</a>
+    <a href="#memes">😂 MEMES</a>
+    <a href="#noticias">📰 NOTICIAS</a>
+    <a href="#resenas">⭐ RESEÑAS</a>
+    <a href="#tutoriales">📚 TUTORIALES</a>
+    <a href="#tiendas">🛒 TIENDAS</a>
+    <a href="#youtube">▶ YOUTUBE</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg-text">GAME</div>
+  <h1>INSERT COIN<br>TO CONTINUE</h1>
+  <p>Tu portal definitivo de videojuegos — retro, indie, AAA y todo lo que existe. Personajes, juegos, devs, memes, noticias y más.</p>
+  <a href="#buscar" class="btn-hero">▶ EMPEZAR</a>
+</section>
+
+<div class="full-sep"></div>
+
+<!-- BUSCADOR GLOBAL -->
+<section class="search-section" id="buscar">
+  <div class="section-title">
+    <span class="bracket">[</span>
+    🔍 BUSCADOR UNIVERSAL DE GAMING
+    <span class="bracket">]</span>
+  </div>
+  <div class="search-bar">
+    <input type="text" id="searchInput" placeholder="Busca personajes, juegos, devs, estudios..." />
+    <button onclick="buscarGoogle()">BUSCAR</button>
+  </div>
+  <div class="search-tags">
+    <span onclick="setSearch('Mario')">Mario</span>
+    <span onclick="setSearch('Zelda')">Zelda</span>
+    <span onclick="setSearch('Sonic')">Sonic</span>
+    <span onclick="setSearch('Kratos')">Kratos</span>
+    <span onclick="setSearch('Lara Croft')">Lara Croft</span>
+    <span onclick="setSearch('Master Chief')">Master Chief</span>
+    <span onclick="setSearch('Cloud Strife')">Cloud Strife</span>
+    <span onclick="setSearch('The Last of Us')">The Last of Us</span>
+    <span onclick="setSearch('Dark Souls')">Dark Souls</span>
+    <span onclick="setSearch('Fortnite')">Fortnite</span>
+    <span onclick="setSearch('Minecraft')">Minecraft</span>
+    <span onclick="setSearch('GTA VI')">GTA VI</span>
+    <span onclick="setSearch('Retro Games')">Retro Games</span>
+    <span onclick="setSearch('Nintendo')">Nintendo</span>
+    <span onclick="setSearch('PlayStation')">PlayStation</span>
+    <span onclick="setSearch('Donkey Kong')">Donkey Kong</span>
+    <span onclick="setSearch('Pac-Man')">Pac-Man</span>
+    <span onclick="setSearch('Street Fighter')">Street Fighter</span>
+  </div>
+</section>
+
+<div class="pixel-sep">▲▼▲▼▲▼▲▼▲▼▲▼▲▼▲▼▲▼▲▼</div>
+
+<!-- PERSONAJES -->
+<section class="section" id="personajes">
+  <div class="section-header">
+    <span class="section-icon">👤</span>
+    <div class="section-label">
+      <span class="title">PERSONAJES ICÓNICOS</span>
+      <span class="sub">DE LOS MUNDOS VIRTUALES</span>
+    </div>
+  </div>
+  <div class="cards-grid">
+    <div class="card">
+      <div class="card-icon">🍄</div>
+      <h3>MARIO</h3>
+      <p>El fontanero más famoso del mundo. Protagonista de Nintendo desde 1985, símbolo global del gaming.</p>
+      <a href="https://www.google.com/search?q=Mario+Nintendo+videogame+character" target="_blank" class="card-link">VER INFO ▶</a>
+    </div>
+    <div class="card pink">
+      <div class="card-icon">⚡</div>
+      <h3>PIKACHU</h3>
+      <p>El Pokémon más reconocido del planeta. Compañero eléctrico de Ash y rostro de una franquicia billonaria.</p>
+      <a href="https://www.google.com/search?q=Pikachu+Pokemon+character+history" target="_blank" class="card-link">VER INFO ▶</a>
+    </div>
+    <div class="card green">
+      <div class="card-icon">⚔️</div>
+      <h3>LINK</h3>
+      <p>El héroe de Hyrule. Portador de la Trifuerza del Valor, defensor del reino en cada era de Zelda.</p>
+      <a href="https://www.google.com/search?q=Link+Legend+of+Zelda+character" target="_blank" class="card-link">VER INFO ▶</a>
+    </div>
+    <div class="card yellow">
+      <div class="card-icon">🦔</div>
+      <h3>SONIC</h3>
+      <p>El erizo más veloz del mundo. Mascota de Sega desde 1991, rival histórico de Mario durante los 90.</p>
+      <a href="https://www.google.com/search?q=Sonic+the+Hedgehog+Sega+character" target="_blank" class="card-link">VER INFO ▶</a>
+    </div>
+    <div class="card orange">
+      <div class="card-icon">🪓</div>
+      <h3>KRATOS</h3>
+      <p>El Fantasma de Esparta. Dios de la Guerra que pasó de destruir el Olimpo a recorrer los reinos nórdicos.</p>
+      <a href="https://www.google.com/search?q=Kratos+God+of+War+character" target="_blank" class="card-link">VER INFO ▶</a>
+    </div>
+    <div class="card">
+      <div class="card-icon">🏹</div>
+      <h3>LARA CROFT</h3>
+      <p>Arqueóloga aventurera de Crystal Dynamics. Ícono de los 90 y símbolo del action-adventure.</p>
+      <a href="https://www.google.com/search?q=Lara+Croft+Tomb+Raider+character" target="_blank" class="card-link">VER INFO ▶</a>
+    </div>
+    <div class="card pink">
+      <div class="card-icon">🤖</div>
+      <h3>MASTER CHIEF</h3>
+      <p>Spartan-117. El rostro de Xbox y Halo. El soldado más temido en la guerra contra el Covenant.</p>
+      <a href="https://www.google.com/search?q=Master+Chief+Halo+character" target="_blank" class="card-link">VER INFO ▶</a>
+    </div>
+    <div class="card green">
+      <div class="card-icon">🗡️</div>
+      <h3>CLOUD STRIFE</h3>
+      <p>Ex-SOLDIER y mercenario de FFVII. Portador de la Buster Sword y enemigo número uno de Shinra.</p>
+      <a href="https://www.google.com/search?q=Cloud+Strife+Final+Fantasy+VII+character" target="_blank" class="card-link">VER INFO ▶</a>
+    </div>
+  </div>
+  <div style="margin-top:20px;text-align:center">
+    <a href="https://www.google.com/search?q=iconic+video+game+characters+all+time" target="_blank" class="btn-hero" style="font-size:8px">VER TODOS LOS PERSONAJES ▶</a>
+  </div>
+</section>
+
+<div class="full-sep"></div>
+
+<!-- VIDEOJUEGOS -->
+<section class="section" id="juegos">
+  <div class="section-header">
+    <span class="section-icon">🎮</span>
+    <div class="section-label">
+      <span class="title">VIDEOJUEGOS</span>
+      <span class="sub">CLÁSICOS, MODERNOS Y TODO LO QUE HAY</span>
+    </div>
+  </div>
+  <div class="cards-grid">
+    <div class="card yellow">
+      <div class="card-icon">🍄</div>
+      <h3>SUPER MARIO BROS</h3>
+      <p>1985 · Nintendo · NES. El plataformero que salvó la industria tras el crash de 1983.</p>
+      <a href="https://www.google.com/search?q=Super+Mario+Bros+1985+NES+history" target="_blank" class="card-link">VER INFO ▶</a>
+    </div>
+    <div class="card pink">
+      <div class="card-icon">🔦</div>
+      <h3>THE LAST OF US</h3>
+      <p>2013 · Naughty Dog · PS3. Obra maestra del storytelling. Supervivencia post-apocalíptica.</p>
+      <a href="https://www.google.com/search?q=The+Last+of+Us+game+Naughty+Dog" target="_blank" class="card-link">VER INFO ▶</a>
+    </div>
+    <div class="card">
+      <div class="card-icon">🌍</div>
+      <h3>MINECRAFT</h3>
+      <p>2011 · Mojang. El juego más vendido de la historia con más de 230 millones de copias.</p>
+      <a href="https://www.google.com/search?q=Minecraft+game+Mojang+history" target="_blank" class="card-link">VER INFO ▶</a>
+    </div>
+    <div class="card green">
+      <div class="card-icon">💀</div>
+      <h3>DARK SOULS</h3>
+      <p>2011 · FromSoftware. Redefinió el RPG de acción. "You Died" se convirtió en cultura pop mundial.</p>
+      <a href="https://www.google.com/search?q=Dark+Souls+game+FromSoftware" target="_blank" class="card-link">VER INFO ▶</a>
+    </div>
+    <div class="card orange">
+      <div class="card-icon">🚗</div>
+      <h3>GTA V</h3>
+      <p>2013 · Rockstar Games. El entretenimiento más lucrativo de la historia con $8 mil millones.</p>
+      <a href="https://www.google.com/search?q=GTA+V+Rockstar+Games+history" target="_blank" class="card-link">VER INFO ▶</a>
+    </div>
+    <div class="card">
+      <div class="card-icon">🏹</div>
+      <h3>BREATH OF THE WILD</h3>
+      <p>2017 · Nintendo. Revolucionó el open world. GOTY histórico y nuevo estándar del género.</p>
+      <a href="https://www.google.com/search?q=Breath+of+the+Wild+Nintendo+Switch" target="_blank" class="card-link">VER INFO ▶</a>
+    </div>
+    <div class="card pink">
+      <div class="card-icon">👾</div>
+      <h3>SPACE INVADERS</h3>
+      <p>1978 · Taito. El shooter que inició todo. Causó escasez de monedas de 100 yen en Japón.</p>
+      <a href="https://www.google.com/search?q=Space+Invaders+1978+Taito+arcade" target="_blank" class="card-link">VER INFO ▶</a>
+    </div>
+    <div class="card yellow">
+      <div class="card-icon">🌀</div>
+      <h3>PAC-MAN</h3>
+      <p>1980 · Namco. El arcade más reconocible de la historia. 40+ años de diversión y cultura pop.</p>
+      <a href="https://www.google.com/search?q=Pac-Man+1980+Namco+arcade+history" target="_blank" class="card-link">VER INFO ▶</a>
+    </div>
+  </div>
+  <div style="margin-top:20px;text-align:center">
+    <a href="https://www.google.com/search?q=best+video+games+of+all+time" target="_blank" class="btn-hero" style="font-size:8px">EXPLORAR MÁS JUEGOS ▶</a>
+  </div>
+</section>
+
+<div class="pixel-sep">▲▼▲▼▲▼▲▼▲▼▲▼▲▼▲▼▲▼▲▼</div>
+
+<!-- DESARROLLADORES -->
+<section class="section" id="desarrolladores">
+  <div class="section-header">
+    <span class="section-icon">👨‍💻</span>
+    <div class="section-label">
+      <span class="title">DESARROLLADORES LEGENDARIOS</span>
+      <span class="sub">LAS MENTES DETRÁS DE LOS JUEGOS</span>
+    </div>
+  </div>
+  <div class="cards-grid">
+    <div class="card green">
+      <div class="card-icon">🎩</div>
+      <h3>SHIGERU MIYAMOTO</h3>
+      <p>Padre de Mario, Zelda y Donkey Kong. El creador más influyente de la historia del gaming. Nintendo.</p>
+      <a href="https://www.google.com/search?q=Shigeru+Miyamoto+Nintendo+game+designer" target="_blank" class="card-link">VER INFO ▶</a>
+    </div>
+    <div class="card pink">
+      <div class="card-icon">🔮</div>
+      <h3>HIDEO KOJIMA</h3>
+      <p>Genio visionario. Creador de Metal Gear Solid y Death Stranding. Fundó Kojima Productions.</p>
+      <a href="https://www.google.com/search?q=Hideo+Kojima+game+developer" target="_blank" class="card-link">VER INFO ▶</a>
+    </div>
+    <div class="card">
+      <div class="card-icon">💀</div>
+      <h3>HIDETAKA MIYAZAKI</h3>
+      <p>Presidente de FromSoftware. Creador de Demon's Souls, Dark Souls, Bloodborne y Elden Ring.</p>
+      <a href="https://www.google.com/search?q=Hidetaka+Miyazaki+FromSoftware+developer" target="_blank" class="card-link">VER INFO ▶</a>
+    </div>
+    <div class="card yellow">
+      <div class="card-icon">🦊</div>
+      <h3>YU SUZUKI</h3>
+      <p>Creador de Hang-On, OutRun, Virtua Fighter y Shenmue. Leyenda absoluta de los arcades Sega.</p>
+      <a href="https://www.google.com/search?q=Yu+Suzuki+Sega+game+developer" target="_blank" class="card-link">VER INFO ▶</a>
+    </div>
+    <div class="card orange">
+      <div class="card-icon">🎬</div>
+      <h3>NEIL DRUCKMANN</h3>
+      <p>Co-presidente de Naughty Dog. Guionista y director de The Last of Us. Nuevo estándar narrativo.</p>
+      <a href="https://www.google.com/search?q=Neil+Druckmann+Naughty+Dog+director" target="_blank" class="card-link">VER INFO ▶</a>
+    </div>
+    <div class="card">
+      <div class="card-icon">🌙</div>
+      <h3>TOBY FOX</h3>
+      <p>Creador solitario de Undertale (2015). Compuso toda la banda sonora. Fenómeno indie global.</p>
+      <a href="https://www.google.com/search?q=Toby+Fox+Undertale+developer" target="_blank" class="card-link">VER INFO ▶</a>
+    </div>
+  </div>
+</section>
+
+<div class="full-sep"></div>
+
+<!-- ESTUDIOS -->
+<section class="section" id="estudios">
+  <div class="section-header">
+    <span class="section-icon">🏢</span>
+    <div class="section-label">
+      <span class="title">ESTUDIOS DE DESARROLLO</span>
+      <span class="sub">LOS FORJADORES DE MUNDOS</span>
+    </div>
+  </div>
+  <div class="cards-grid">
+    <div class="card pink">
+      <div class="card-icon">🐕</div>
+      <h3>NAUGHTY DOG</h3>
+      <p>California · Sony. Crash Bandicoot, Jak & Daxter, Uncharted, The Last of Us. Maestros del narrativo.</p>
+      <a href="https://www.google.com/search?q=Naughty+Dog+game+studio+history" target="_blank" class="card-link">VER INFO ▶</a>
+    </div>
+    <div class="card green">
+      <div class="card-icon">☠️</div>
+      <h3>FROMSOFTWARE</h3>
+      <p>Tokio, Japón. Dark Souls, Bloodborne, Sekiro, Elden Ring. Maestros del desafío y la narrativa ambiental.</p>
+      <a href="https://www.google.com/search?q=FromSoftware+game+studio+Japan" target="_blank" class="card-link">VER INFO ▶</a>
+    </div>
+    <div class="card">
+      <div class="card-icon">⭐</div>
+      <h3>ROCKSTAR GAMES</h3>
+      <p>Nueva York. GTA, Red Dead Redemption. Referentes absolutos del open world narrativo.</p>
+      <a href="https://www.google.com/search?q=Rockstar+Games+studio+history" target="_blank" class="card-link">VER INFO ▶</a>
+    </div>
+    <div class="card yellow">
+      <div class="card-icon">🌿</div>
+      <h3>CD PROJEKT RED</h3>
+      <p>Varsovia, Polonia. The Witcher saga, Cyberpunk 2077. Mundos ricos en narrativa y elección moral.</p>
+      <a href="https://www.google.com/search?q=CD+Projekt+Red+studio+Witcher+Cyberpunk" target="_blank" class="card-link">VER INFO ▶</a>
+    </div>
+    <div class="card orange">
+      <div class="card-icon">🏔️</div>
+      <h3>BETHESDA</h3>
+      <p>Maryland · Microsoft. The Elder Scrolls, Fallout, Starfield. Leyendas del RPG occidental.</p>
+      <a href="https://www.google.com/search?q=Bethesda+Game+Studios+history" target="_blank" class="card-link">VER INFO ▶</a>
+    </div>
+    <div class="card">
+      <div class="card-icon">🌊</div>
+      <h3>RETROGAMES · TODOS</h3>
+      <p>Konami, Capcom, Square Enix, Rare, Atari, Midway... La historia completa de los estudios retro.</p>
+      <a href="https://www.google.com/search?q=classic+retro+game+studios+history" target="_blank" class="card-link">VER INFO ▶</a>
+    </div>
+  </div>
+</section>
+
+<div class="pixel-sep">▲▼▲▼▲▼▲▼▲▼▲▼▲▼▲▼▲▼▲▼</div>
+
+<!-- EMPRESAS -->
+<section class="section" id="empresas">
+  <div class="section-header">
+    <span class="section-icon">🏭</span>
+    <div class="section-label">
+      <span class="title">GRANDES EMPRESAS</span>
+      <span class="sub">LOS GIGANTES DE LA INDUSTRIA</span>
+    </div>
+  </div>
+  <div class="cards-grid">
+    <div class="card green">
+      <div class="card-icon">🍄</div>
+      <h3>NINTENDO</h3>
+      <p>Kioto, Japón · 1889/1975. Switch, Game Boy, NES, SNES. La empresa que más ha reinventado el gaming.</p>
+      <a href="https://www.nintendo.com" target="_blank" class="card-link">SITIO OFICIAL ▶</a>
+    </div>
+    <div class="card pink">
+      <div class="card-icon">🎮</div>
+      <h3>SONY · PLAYSTATION</h3>
+      <p>Tokio, Japón · 1994. PS1 al PS5. God of War, Spider-Man, Horizon. Exclusivos de culto.</p>
+      <a href="https://www.playstation.com" target="_blank" class="card-link">SITIO OFICIAL ▶</a>
+    </div>
+    <div class="card">
+      <div class="card-icon">🟩</div>
+      <h3>MICROSOFT · XBOX</h3>
+      <p>Redmond · 2001. Xbox, Game Pass. Adquirió Activision Blizzard en el mayor deal del gaming.</p>
+      <a href="https://www.xbox.com" target="_blank" class="card-link">SITIO OFICIAL ▶</a>
+    </div>
+    <div class="card yellow">
+      <div class="card-icon">🦊</div>
+      <h3>SEGA</h3>
+      <p>Tokio · 1965. Mega Drive, Saturn, Dreamcast. Sonic, Yakuza, Persona. Icono del gaming retro.</p>
+      <a href="https://www.google.com/search?q=SEGA+company+history+consoles" target="_blank" class="card-link">VER INFO ▶</a>
+    </div>
+    <div class="card orange">
+      <div class="card-icon">🕹️</div>
+      <h3>ACTIVISION BLIZZARD</h3>
+      <p>EE.UU. · Ahora de Microsoft. Call of Duty, World of Warcraft, Diablo, Overwatch.</p>
+      <a href="https://www.google.com/search?q=Activision+Blizzard+history+games" target="_blank" class="card-link">VER INFO ▶</a>
+    </div>
+    <div class="card">
+      <div class="card-icon">🎲</div>
+      <h3>EA GAMES</h3>
+      <p>Redwood · 1982. EA FC (FIFA), Battlefield, Mass Effect, The Sims. Pioneros del gaming online.</p>
+      <a href="https://www.ea.com" target="_blank" class="card-link">SITIO OFICIAL ▶</a>
+    </div>
+  </div>
+</section>
+
+<div class="full-sep"></div>
+
+<!-- CURIOSIDADES -->
+<section class="section" id="curiosidades">
+  <div class="section-header">
+    <span class="section-icon">💡</span>
+    <div class="section-label">
+      <span class="title">DATOS CURIOSOS</span>
+      <span class="sub">LO QUE NO SABÍAS DEL GAMING</span>
+    </div>
+  </div>
+  <div class="cards-grid">
+    <div class="card yellow">
+      <div class="card-icon">🐸</div>
+      <h3>EL PRIMER MARIO ERA "JUMPMAN"</h3>
+      <p>Mario debutó en 1981 en Donkey Kong como un personaje sin nombre llamado "Jumpman". Nintendo.</p>
+      <a href="https://www.google.com/search?q=Jumpman+Mario+origin+Donkey+Kong+1981" target="_blank" class="card-link">SABER MÁS ▶</a>
+    </div>
+    <div class="card pink">
+      <div class="card-icon">🎵</div>
+      <h3>TETRIS ES EL MÁS VENDIDO</h3>
+      <p>Con más de 520 millones de copias, Tetris supera a Minecraft. Creado por Alexey Pajitnov en 1984.</p>
+      <a href="https://www.google.com/search?q=Tetris+best+selling+game+history+Pajitnov" target="_blank" class="card-link">SABER MÁS ▶</a>
+    </div>
+    <div class="card">
+      <div class="card-icon">💰</div>
+      <h3>GTA V SUPERÓ AL CINE</h3>
+      <p>Con $8 mil millones en ingresos, GTA V supera en ganancias a las películas y álbumes más exitosos.</p>
+      <a href="https://www.google.com/search?q=GTA+V+revenue+8+billion+entertainment+record" target="_blank" class="card-link">SABER MÁS ▶</a>
+    </div>
+    <div class="card green">
+      <div class="card-icon">👾</div>
+      <h3>SPACE INVADERS AGOTÓ MONEDAS</h3>
+      <p>En 1978, Space Invaders causó escasez nacional de monedas de 100 yen en Japón. Fenómeno real.</p>
+      <a href="https://www.google.com/search?q=Space+Invaders+coin+shortage+Japan+1978" target="_blank" class="card-link">SABER MÁS ▶</a>
+    </div>
+    <div class="card orange">
+      <div class="card-icon">🎮</div>
+      <h3>ATARI VIENE DEL GO</h3>
+      <p>"Atari" es un término del juego de mesa Go que significa estar a punto de capturar las piezas del rival.</p>
+      <a href="https://www.google.com/search?q=Atari+name+origin+go+game+Bushnell" target="_blank" class="card-link">SABER MÁS ▶</a>
+    </div>
+    <div class="card">
+      <div class="card-icon">🌙</div>
+      <h3>E.T. ENTERRADO EN NUEVO MÉXICO</h3>
+      <p>Millones de cartuchos del infame juego E.T. para Atari 2600 fueron enterrados en un vertedero en 1983.</p>
+      <a href="https://www.google.com/search?q=ET+Atari+2600+Alamogordo+landfill+1983" target="_blank" class="card-link">SABER MÁS ▶</a>
+    </div>
+  </div>
+  <div style="margin-top:20px;text-align:center">
+    <a href="https://www.google.com/search?q=video+game+fun+facts+curiosities+history" target="_blank" class="btn-hero" style="font-size:8px">MÁS CURIOSIDADES ▶</a>
+  </div>
+</section>
+
+<div class="pixel-sep">▲▼▲▼▲▼▲▼▲▼▲▼▲▼▲▼▲▼▲▼</div>
+
+<!-- MEMES -->
+<section class="section" id="memes">
+  <div class="section-header">
+    <span class="section-icon">😂</span>
+    <div class="section-label">
+      <span class="title">MEMES GAMER</span>
+      <span class="sub">CULTURA LOCAL Y DE LA COMUNIDAD</span>
+    </div>
+  </div>
+  <div class="memes-grid">
+    <div class="meme-card">
+      <div class="meme-img">💀</div>
+      <div class="meme-caption">YOU DIED<br>·<br>From­Software<br>en tu vida personal</div>
+    </div>
+    <div class="meme-card">
+      <div class="meme-img">🎮</div>
+      <div class="meme-caption">MOM: "5 MINUTOS"<br>·<br>YO: claro<br>·<br>3 HORAS DESPUÉS...</div>
+    </div>
+    <div class="meme-card">
+      <div class="meme-img">🌀</div>
+      <div class="meme-caption">LOADING...<br>·<br>Mi vida los lunes<br>a las 6am</div>
+    </div>
+    <div class="meme-card">
+      <div class="meme-img">🍄</div>
+      <div class="meme-caption">MARIO CON ESTRELLA<br>·<br>YO CUANDO TERMINA<br>EL EXAMEN</div>
+    </div>
+    <div class="meme-card">
+      <div class="meme-img">🦔</div>
+      <div class="meme-caption">SONIC CORRIENDO<br>·<br>YO HACIA EL<br>VIERNES</div>
+    </div>
+    <div class="meme-card">
+      <div class="meme-img">⚡</div>
+      <div class="meme-caption">PIKACHU SORPRENDIDO<br>·<br>CUANDO ALGUIEN<br>NO CONOCE ZELDA</div>
+    </div>
+    <div class="meme-card">
+      <div class="meme-img">🎯</div>
+      <div class="meme-caption">GTA ★★★★★<br>·<br>YO PAGANDO<br>LA RENTA</div>
+    </div>
+    <div class="meme-card">
+      <div class="meme-img">🏆</div>
+      <div class="meme-caption">LOGRO DESBLOQUEADO:<br>·<br>SOBREVIVISTE<br>EL LUNES</div>
+    </div>
+  </div>
+  <div style="margin-top:25px;text-align:center;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+    <a href="https://www.google.com/search?q=memes+gamer+videojuegos+2025" target="_blank" class="btn-hero" style="font-size:8px">MÁS MEMES ▶</a>
+    <a href="https://www.reddit.com/r/gaming/" target="_blank" class="btn-hero" style="font-size:8px;background:var(--neon-orange);box-shadow:0 0 15px rgba(255,107,0,0.4)">REDDIT GAMING ▶</a>
+    <a href="https://www.reddit.com/r/gamingmemes/" target="_blank" class="btn-hero" style="font-size:8px;background:var(--neon-pink);box-shadow:var(--glow-pink)">R/GAMINGMEMES ▶</a>
+  </div>
+</section>
+
+<div class="full-sep"></div>
+
+<!-- NOTICIAS -->
+<section class="section" id="noticias">
+  <div class="section-header">
+    <span class="section-icon">📰</span>
+    <div class="section-label">
+      <span class="title">NOTICIAS Y POLÉMICAS</span>
+      <span class="sub">LO QUE ESTÁ PASANDO AHORA</span>
+    </div>
+  </div>
+  <div class="news-list">
+    <div class="news-item">
+      <span class="news-badge">🔥 HOT</span>
+      <div class="news-content">
+        <h4>GTA VI: ¿La espera más larga de la historia?</h4>
+        <p>Rockstar mantiene en suspenso a millones. El sucesor del juego más lucrativo del entretenimiento genera expectativas sin precedentes. ¿Valdrá la pena?</p>
+      </div>
+    </div>
+    <div class="news-item">
+      <span class="news-badge new">✨ NEW</span>
+      <div class="news-content">
+        <h4>Nintendo Switch 2: Todo lo confirmado</h4>
+        <p>La nueva consola de Nintendo promete retrocompatibilidad y mejoras gráficas significativas. Los fans esperan ansiosamente la fecha de lanzamiento oficial.</p>
+      </div>
+    </div>
+    <div class="news-item">
+      <span class="news-badge">💥 POLÉMICA</span>
+      <div class="news-content">
+        <h4>Lootboxes: ¿Juego o apuesta?</h4>
+        <p>Varios países estudian regulaciones para las cajas de botín. El debate entre la comunidad gamer y los reguladores gubernamentales sigue encendido.</p>
+      </div>
+    </div>
+    <div class="news-item">
+      <span class="news-badge hot">🕹️ RETRO</span>
+      <div class="news-content">
+        <h4>Emuladores en iOS: Victoria para los gamers</h4>
+        <p>Apple permitió emuladores en su App Store. Delta se viralizó en días. Los jugadores retro celebran poder jugar sus clásicos favoritos en iPhone.</p>
+      </div>
+    </div>
+    <div class="news-item">
+      <span class="news-badge new">⚡ ESPORTS</span>
+      <div class="news-content">
+        <h4>eSports superan audiencias de deportes tradicionales</h4>
+        <p>El gaming competitivo sigue creciendo. Torneos de League of Legends y Valorant alcanzan decenas de millones de espectadores simultáneos.</p>
+      </div>
+    </div>
+  </div>
+  <div style="margin-top:25px;text-align:center;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+    <a href="https://www.ign.com" target="_blank" class="btn-hero" style="font-size:8px">IGN ▶</a>
+    <a href="https://www.gamespot.com" target="_blank" class="btn-hero" style="font-size:8px">GAMESPOT ▶</a>
+    <a href="https://www.kotaku.com" target="_blank" class="btn-hero" style="font-size:8px">KOTAKU ▶</a>
+    <a href="https://www.eurogamer.net" target="_blank" class="btn-hero" style="font-size:8px">EUROGAMER ▶</a>
+    <a href="https://www.vandal.net" target="_blank" class="btn-hero" style="font-size:8px;background:var(--neon-pink);box-shadow:var(--glow-pink)">VANDAL ES ▶</a>
+    <a href="https://as.com/juegos" target="_blank" class="btn-hero" style="font-size:8px;background:var(--neon-orange);box-shadow:none">AS.COM ▶</a>
+  </div>
+</section>
+
+<div class="pixel-sep">▲▼▲▼▲▼▲▼▲▼▲▼▲▼▲▼▲▼▲▼</div>
+
+<!-- RESEÑAS -->
+<section class="section" id="resenas">
+  <div class="section-header">
+    <span class="section-icon">⭐</span>
+    <div class="section-label">
+      <span class="title">RESEÑAS</span>
+      <span class="sub">BUSCA, LEE Y PUBLICA TU OPINIÓN</span>
+    </div>
+  </div>
+
+  <!-- Buscar reseñas -->
+  <div style="background:rgba(0,0,0,0.4);border:1px solid rgba(0,245,255,0.2);padding:25px;margin-bottom:30px">
+    <h3 style="font-family:'Press Start 2P',cursive;font-size:10px;color:var(--neon-cyan);margin-bottom:15px">🔍 BUSCAR RESEÑAS</h3>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <input type="text" id="reviewSearch" placeholder="Busca reseñas de cualquier juego..."
+        style="flex:1;min-width:200px;background:rgba(0,0,0,0.7);border:1px solid rgba(0,245,255,0.3);outline:none;padding:12px 16px;font-family:'VT323',monospace;font-size:20px;color:var(--neon-green);caret-color:var(--neon-green)">
+      <button onclick="buscarResena()" style="font-family:'Press Start 2P',cursive;font-size:8px;background:transparent;border:2px solid var(--neon-cyan);color:var(--neon-cyan);padding:12px 20px;cursor:pointer" onmouseover="this.style.background='var(--neon-cyan)';this.style.color='var(--dark)'" onmouseout="this.style.background='transparent';this.style.color='var(--neon-cyan)'">BUSCAR</button>
+    </div>
+    <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+      <span style="font-family:'Press Start 2P',cursive;font-size:7px;color:#555">IR A:</span>
+      <a href="https://www.metacritic.com/browse/game/" target="_blank" style="font-family:'Press Start 2P',cursive;font-size:7px;color:var(--neon-yellow);text-decoration:none;border:1px solid rgba(255,221,0,0.3);padding:4px 8px">METACRITIC</a>
+      <a href="https://store.steampowered.com" target="_blank" style="font-family:'Press Start 2P',cursive;font-size:7px;color:var(--neon-cyan);text-decoration:none;border:1px solid rgba(0,245,255,0.3);padding:4px 8px">STEAM</a>
+      <a href="https://opencritic.com" target="_blank" style="font-family:'Press Start 2P',cursive;font-size:7px;color:var(--neon-pink);text-decoration:none;border:1px solid rgba(255,0,110,0.3);padding:4px 8px">OPENCRITIC</a>
+      <a href="https://howlongtobeat.com" target="_blank" style="font-family:'Press Start 2P',cursive;font-size:7px;color:var(--neon-green);text-decoration:none;border:1px solid rgba(0,255,65,0.3);padding:4px 8px">HLTB</a>
+    </div>
+  </div>
+
+  <!-- Reseñas de ejemplo -->
+  <div class="cards-grid" style="margin-bottom:30px">
+    <div class="card green">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <h3 style="margin:0">ELDEN RING</h3>
+        <span style="color:var(--neon-yellow);font-size:22px">★★★★★</span>
+      </div>
+      <p>Una obra maestra. FromSoftware superó todos sus trabajos anteriores. El mundo abierto es pura poesía oscura.</p>
+      <span style="font-family:'Press Start 2P',cursive;font-size:6px;color:#555">— GAMER_RETRO_MX · 2024</span>
+    </div>
+    <div class="card pink">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <h3 style="margin:0">CYBERPUNK 2077</h3>
+        <span style="color:var(--neon-yellow);font-size:22px">★★★★☆</span>
+      </div>
+      <p>Lanzamiento desastroso pero Phantom Liberty lo redimió. Night City es el mundo más detallado del gaming.</p>
+      <span style="font-family:'Press Start 2P',cursive;font-size:6px;color:#555">— NEON_RUNNER · 2023</span>
+    </div>
+    <div class="card yellow">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <h3 style="margin:0">MARIO ODYSSEY</h3>
+        <span style="color:var(--neon-yellow);font-size:22px">★★★★★</span>
+      </div>
+      <p>Nintendo en su máximo esplendor. Diversión pura en cada luna. Un juego que te devuelve la alegría.</p>
+      <span style="font-family:'Press Start 2P',cursive;font-size:6px;color:#555">— PIXEL_PLUMBER · 2022</span>
+    </div>
+  </div>
+
+  <!-- Publicar reseña -->
+  <div class="review-form">
+    <h4>✏️ PUBLICAR MI RESEÑA</h4>
+    <div class="form-row">
+      <div class="form-field">
+        <label>NOMBRE DEL JUEGO</label>
+        <input type="text" placeholder="Ej: The Legend of Zelda: TOTK">
+      </div>
+      <div class="form-field">
+        <label>TU NOMBRE / ALIAS</label>
+        <input type="text" placeholder="Ej: GamerRetro99">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-field">
+        <label>PLATAFORMA</label>
+        <select>
+          <option>Nintendo Switch</option>
+          <option>PlayStation 5</option>
+          <option>PlayStation 4</option>
+          <option>Xbox Series X/S</option>
+          <option>PC (Steam)</option>
+          <option>PC (Epic Games)</option>
+          <option>Mobile (Android/iOS)</option>
+          <option>NES / SNES / N64</option>
+          <option>Sega Genesis / Saturn / Dreamcast</option>
+          <option>Arcade Original</option>
+          <option>Otra consola retro</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label>PUNTUACIÓN</label>
+        <div class="stars-select" id="starsSelect">
+          <span onclick="setStars(1)">★</span>
+          <span onclick="setStars(2)">★</span>
+          <span onclick="setStars(3)">★</span>
+          <span onclick="setStars(4)">★</span>
+          <span onclick="setStars(5)">★</span>
+        </div>
+      </div>
+    </div>
+    <div class="form-field">
+      <label>TU RESEÑA</label>
+      <textarea placeholder="Escribe tu opinión sobre el juego..."></textarea>
+    </div>
+    <button class="btn-submit" onclick="alert('¡Reseña enviada! Gracias por contribuir a la comunidad Sector Gamer 🎮')">PUBLICAR RESEÑA ▶</button>
+  </div>
+</section>
+
+<div class="full-sep"></div>
+
+<!-- TUTORIALES -->
+<section class="section" id="tutoriales">
+  <div class="section-header">
+    <span class="section-icon">📚</span>
+    <div class="section-label">
+      <span class="title">TUTORIALES Y GUÍAS</span>
+      <span class="sub">TRUCOS · WALKTHROUGHS · TIPS</span>
+    </div>
+  </div>
+
+  <div style="background:rgba(0,0,0,0.4);border:1px solid rgba(255,0,110,0.2);padding:25px;margin-bottom:30px">
+    <h3 style="font-family:'Press Start 2P',cursive;font-size:10px;color:var(--neon-pink);margin-bottom:15px">🔍 BUSCAR TUTORIAL</h3>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <input type="text" id="tutorialSearch" placeholder="Ej: cómo vencer a Malenia en Elden Ring..."
+        style="flex:1;min-width:200px;background:rgba(0,0,0,0.7);border:1px solid rgba(255,0,110,0.3);outline:none;padding:12px 16px;font-family:'VT323',monospace;font-size:20px;color:var(--neon-green);caret-color:var(--neon-green)">
+      <button onclick="buscarTutorial()" style="font-family:'Press Start 2P',cursive;font-size:8px;background:var(--neon-pink);border:none;color:var(--dark);padding:12px 20px;cursor:pointer">BUSCAR</button>
+    </div>
+    <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+      <span style="font-family:'Press Start 2P',cursive;font-size:7px;color:#555">IR A:</span>
+      <a href="https://www.youtube.com/results?search_query=tutorial+guia+videojuegos" target="_blank" style="font-family:'Press Start 2P',cursive;font-size:7px;color:#ff0000;text-decoration:none;border:1px solid rgba(255,0,0,0.3);padding:4px 8px">▶ YOUTUBE</a>
+      <a href="https://gamefaqs.gamespot.com" target="_blank" style="font-family:'Press Start 2P',cursive;font-size:7px;color:var(--neon-cyan);text-decoration:none;border:1px solid rgba(0,245,255,0.3);padding:4px 8px">GAMEFAQS</a>
+      <a href="https://www.ign.com/wikis" target="_blank" style="font-family:'Press Start 2P',cursive;font-size:7px;color:var(--neon-yellow);text-decoration:none;border:1px solid rgba(255,221,0,0.3);padding:4px 8px">IGN WIKIS</a>
+      <a href="https://www.fandom.com" target="_blank" style="font-family:'Press Start 2P',cursive;font-size:7px;color:var(--neon-green);text-decoration:none;border:1px solid rgba(0,255,65,0.3);padding:4px 8px">FANDOM</a>
+    </div>
+  </div>
+
+  <div class="cards-grid">
+    <div class="card pink">
+      <div class="card-icon">💀</div>
+      <h3>SOBREVIVIR DARK SOULS</h3>
+      <p>Guía para principiantes: stats, dodge timing, builds recomendados para no sufrir de más.</p>
+      <a href="https://www.youtube.com/results?search_query=dark+souls+tutorial+guia+principiantes+español" target="_blank" class="card-link">VER EN YOUTUBE ▶</a>
+    </div>
+    <div class="card yellow">
+      <div class="card-icon">🌿</div>
+      <h3>KOROK SEEDS EN TOTK</h3>
+      <p>Guía completa de las 1000 Korok Seeds en Tears of the Kingdom con mapas y ubicaciones.</p>
+      <a href="https://www.youtube.com/results?search_query=korok+seeds+tears+kingdom+guide+all" target="_blank" class="card-link">VER EN YOUTUBE ▶</a>
+    </div>
+    <div class="card">
+      <div class="card-icon">🎯</div>
+      <h3>MEJORAR EN FPS</h3>
+      <p>Sensibilidad, crosshair placement, movement. Para Valorant, CS2, COD y todos los shooters.</p>
+      <a href="https://www.youtube.com/results?search_query=como+mejorar+fps+gaming+tutorial+español" target="_blank" class="card-link">VER EN YOUTUBE ▶</a>
+    </div>
+    <div class="card green">
+      <div class="card-icon">🏆</div>
+      <h3>SPEEDRUNNING 101</h3>
+      <p>Introducción al speedrunning. Glitches, rutas y cómo empezar a correr tu juego favorito.</p>
+      <a href="https://www.youtube.com/results?search_query=speedrunning+tutorial+beginners+guide" target="_blank" class="card-link">VER EN YOUTUBE ▶</a>
+    </div>
+    <div class="card orange">
+      <div class="card-icon">🌍</div>
+      <h3>MINECRAFT DESDE CERO</h3>
+      <p>Supervivencia completa para nuevos jugadores. Del día 1 hasta vencer al Ender Dragon.</p>
+      <a href="https://www.youtube.com/results?search_query=minecraft+tutorial+supervivencia+completo+español" target="_blank" class="card-link">VER EN YOUTUBE ▶</a>
+    </div>
+    <div class="card pink">
+      <div class="card-icon">🚗</div>
+      <h3>GTA ONLINE: DINERO RÁPIDO</h3>
+      <p>Las mejores actividades para hacer dinero en GTA Online. Cayo Perico, autoshops y más.</p>
+      <a href="https://www.youtube.com/results?search_query=GTA+online+dinero+rapido+2025+guia" target="_blank" class="card-link">VER EN YOUTUBE ▶</a>
+    </div>
+  </div>
+</section>
+
+<div class="pixel-sep">▲▼▲▼▲▼▲▼▲▼▲▼▲▼▲▼▲▼▲▼</div>
+
+<!-- TIENDAS -->
+<section class="section" id="tiendas">
+  <div class="section-header">
+    <span class="section-icon">🛒</span>
+    <div class="section-label">
+      <span class="title">TIENDAS OFICIALES</span>
+      <span class="sub">COMPRA EN LAS PLATAFORMAS ORIGINALES</span>
+    </div>
+  </div>
+  <div class="stores-grid">
+    <a href="https://www.nintendo.com/store" target="_blank" class="store-btn">
+      <span class="store-icon">🍄</span>
+      <div><span class="store-name">NINTENDO ESHOP</span><span class="store-desc">Switch · 3DS · Wii U</span></div>
+    </a>
+    <a href="https://store.playstation.com" target="_blank" class="store-btn">
+      <span class="store-icon">🎮</span>
+      <div><span class="store-name">PS STORE</span><span class="store-desc">PlayStation 4 & 5</span></div>
+    </a>
+    <a href="https://www.xbox.com/es-MX/microsoft-store" target="_blank" class="store-btn">
+      <span class="store-icon">🟩</span>
+      <div><span class="store-name">XBOX STORE</span><span class="store-desc">Xbox & Windows</span></div>
+    </a>
+    <a href="https://store.steampowered.com" target="_blank" class="store-btn">
+      <span class="store-icon">🌫️</span>
+      <div><span class="store-name">STEAM</span><span class="store-desc">PC Gaming principal</span></div>
+    </a>
+    <a href="https://store.epicgames.com" target="_blank" class="store-btn">
+      <span class="store-icon">⚡</span>
+      <div><span class="store-name">EPIC GAMES STORE</span><span class="store-desc">PC · Juegos gratis semanales</span></div>
+    </a>
+    <a href="https://www.gog.com" target="_blank" class="store-btn">
+      <span class="store-icon">🏆</span>
+      <div><span class="store-name">GOG.COM</span><span class="store-desc">DRM-Free · Clásicos PC</span></div>
+    </a>
+    <a href="https://www.humblebundle.com" target="_blank" class="store-btn">
+      <span class="store-icon">🎁</span>
+      <div><span class="store-name">HUMBLE BUNDLE</span><span class="store-desc">Bundles con descuento</span></div>
+    </a>
+    <a href="https://itch.io" target="_blank" class="store-btn">
+      <span class="store-icon">🍥</span>
+      <div><span class="store-name">ITCH.IO</span><span class="store-desc">Indie games · Soporte devs</span></div>
+    </a>
+    <a href="https://www.amazon.com.mx/s?k=videojuegos" target="_blank" class="store-btn">
+      <span class="store-icon">📦</span>
+      <div><span class="store-name">AMAZON MX</span><span class="store-desc">Juegos físicos y digitales</span></div>
+    </a>
+    <a href="https://www.mercadolibre.com.mx/videojuegos" target="_blank" class="store-btn">
+      <span class="store-icon">🛍️</span>
+      <div><span class="store-name">MERCADOLIBRE</span><span class="store-desc">Nuevos y usados en MX</span></div>
+    </a>
+    <a href="https://play.google.com/store/games" target="_blank" class="store-btn">
+      <span class="store-icon">🤖</span>
+      <div><span class="store-name">GOOGLE PLAY GAMES</span><span class="store-desc">Android gaming</span></div>
+    </a>
+    <a href="https://apps.apple.com/mx/genre/juegos/id6014" target="_blank" class="store-btn">
+      <span class="store-icon">🍎</span>
+      <div><span class="store-name">APP STORE</span><span class="store-desc">iOS · Apple Arcade</span></div>
+    </a>
+  </div>
+</section>
+
+<div class="full-sep"></div>
+
+<!-- YOUTUBE -->
+<section class="section" id="youtube">
+  <div class="section-header">
+    <span class="section-icon">▶</span>
+    <div class="section-label">
+      <span class="title">YOUTUBE Y STREAMS</span>
+      <span class="sub">CANALES · GAMEPLAYS · CONTENIDO EN VIVO</span>
+    </div>
+  </div>
+
+  <div style="background:rgba(0,0,0,0.5);border:1px solid rgba(255,0,0,0.3);padding:25px;margin-bottom:30px">
+    <h3 style="font-family:'Press Start 2P',cursive;font-size:10px;color:#ff0000;margin-bottom:15px;text-shadow:0 0 10px rgba(255,0,0,0.5)">🔴 BUSCAR EN YOUTUBE</h3>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <input type="text" id="ytSearch" placeholder="Busca gameplays, reviews, tutoriales..."
+        style="flex:1;min-width:200px;background:rgba(0,0,0,0.7);border:1px solid rgba(255,0,0,0.3);outline:none;padding:12px 16px;font-family:'VT323',monospace;font-size:20px;color:var(--neon-green);caret-color:var(--neon-green)">
+      <button onclick="buscarYT()" style="font-family:'Press Start 2P',cursive;font-size:8px;background:#ff0000;border:none;color:white;padding:12px 20px;cursor:pointer">▶ BUSCAR</button>
+    </div>
+  </div>
+
+  <div class="yt-grid">
+    <div class="yt-card">
+      <div class="yt-thumb">🎮</div>
+      <div class="yt-info">
+        <h4>GAMEPLAYS Y WALKTHROUGHS</h4>
+        <p>Gameplays completos de cualquier juego</p>
+        <a href="https://www.youtube.com/results?search_query=gameplay+walkthrough+videojuegos+español" target="_blank" class="yt-btn">▶ VER EN YOUTUBE</a>
+      </div>
+    </div>
+    <div class="yt-card">
+      <div class="yt-thumb">🏆</div>
+      <div class="yt-info">
+        <h4>SPEEDRUNS ÉPICOS</h4>
+        <p>Los speedruns más increíbles del gaming mundial</p>
+        <a href="https://www.youtube.com/results?search_query=speedrun+world+record+gaming+2024" target="_blank" class="yt-btn">▶ VER EN YOUTUBE</a>
+      </div>
+    </div>
+    <div class="yt-card">
+      <div class="yt-thumb">👴</div>
+      <div class="yt-info">
+        <h4>HISTORIA DEL GAMING</h4>
+        <p>Documentales y retrospectivas de videojuegos</p>
+        <a href="https://www.youtube.com/results?search_query=historia+videojuegos+documental+retro" target="_blank" class="yt-btn">▶ VER EN YOUTUBE</a>
+      </div>
+    </div>
+    <div class="yt-card">
+      <div class="yt-thumb">🔴</div>
+      <div class="yt-info">
+        <h4>STREAMS EN VIVO</h4>
+        <p>Los mejores streams gaming en directo</p>
+        <a href="https://www.youtube.com/gaming" target="_blank" class="yt-btn">▶ YT GAMING LIVE</a>
+      </div>
+    </div>
+    <div class="yt-card">
+      <div class="yt-thumb">🎵</div>
+      <div class="yt-info">
+        <h4>OST Y MÚSICA GAMER</h4>
+        <p>Soundtracks épicos de los mejores videojuegos</p>
+        <a href="https://www.youtube.com/results?search_query=video+game+soundtrack+OST+best" target="_blank" class="yt-btn">▶ VER EN YOUTUBE</a>
+      </div>
+    </div>
+    <div class="yt-card">
+      <div class="yt-thumb">😂</div>
+      <div class="yt-info">
+        <h4>HUMOR Y COMPILADOS</h4>
+        <p>Fails épicos, clips y momentos divertidos del gaming</p>
+        <a href="https://www.youtube.com/results?search_query=gaming+funny+moments+fails+compilation" target="_blank" class="yt-btn">▶ VER EN YOUTUBE</a>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top:25px;text-align:center;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+    <a href="https://www.twitch.tv/directory/category/gaming" target="_blank" class="btn-hero" style="font-size:8px;background:#9146ff;box-shadow:0 0 15px rgba(145,70,255,0.4)">🟣 VER TWITCH ▶</a>
+    <a href="https://www.youtube.com/gaming" target="_blank" class="btn-hero" style="font-size:8px;background:#ff0000;box-shadow:0 0 15px rgba(255,0,0,0.4)">▶ YOUTUBE GAMING</a>
+    <a href="https://kick.com" target="_blank" class="btn-hero" style="font-size:8px;background:var(--neon-green);box-shadow:var(--glow-green)">🎯 KICK.COM ▶</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">SECTOR GAMER RETRO</div>
+  <div style="font-family:'Press Start 2P',cursive;font-size:8px;color:var(--neon-cyan);margin-bottom:20px;text-shadow:var(--glow-cyan)">// PLAYER 1 · INSERT COIN //</div>
+  <div class="footer-links">
+    <a href="#buscar">BUSCAR</a>
+    <a href="#personajes">PERSONAJES</a>
+    <a href="#juegos">JUEGOS</a>
+    <a href="#desarrolladores">DEVS</a>
+    <a href="#estudios">ESTUDIOS</a>
+    <a href="#empresas">EMPRESAS</a>
+    <a href="#curiosidades">CURIOSIDADES</a>
+    <a href="#memes">MEMES</a>
+    <a href="#noticias">NOTICIAS</a>
+    <a href="#resenas">RESEÑAS</a>
+    <a href="#tutoriales">TUTORIALES</a>
+    <a href="#tiendas">TIENDAS</a>
+    <a href="#youtube">YOUTUBE</a>
+  </div>
+  <div class="footer-copy">
+    © 2025 SECTOR GAMER RETRO · HECHO CON ❤️ Y MUCHAS MONEDAS DE 100 PESOS<br>
+    <span style="color:var(--neon-pink);font-size:12px;font-family:'Press Start 2P',cursive;text-shadow:var(--glow-pink)">GAME OVER? PRESS START AGAIN.</span>
+  </div>
+</footer>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">▲ TOP</button>
+
+<script>
+  window.addEventListener('scroll',()=>{
+    document.getElementById('scrollTop').classList.toggle('visible',window.scrollY>400);
+  });
+  function buscarGoogle(){
+    const q=document.getElementById('searchInput').value.trim();
+    if(!q)return;
+    window.open(`https://www.google.com/search?q=${encodeURIComponent(q+' video game')},'_blank');
+  }
+  function setSearch(term){
+    document.getElementById('searchInput').value=term;
+    document.getElementById('buscar').scrollIntoView({behavior:'smooth'});
+  }
+  document.getElementById('searchInput').addEventListener('keydown',e=>{if(e.key==='Enter')buscarGoogle();});
+  function buscarResena(){
+    const q=document.getElementById('reviewSearch').value.trim();
+    if(!q)return;
+    window.open(`https://www.metacritic.com/search/${encodeURIComponent(q)}/`,'_blank');
+  }
+  document.getElementById('reviewSearch').addEventListener('keydown',e=>{if(e.key==='Enter')buscarResena();});
+  function buscarTutorial(){
+    const q=document.getElementById('tutorialSearch').value.trim();
+    if(!q)return;
+    window.open(`https://www.youtube.com/results?search_query=${encodeURIComponent(q+' tutorial guia')}`,'_blank');
+  }
+  document.getElementById('tutorialSearch').addEventListener('keydown',e=>{if(e.key==='Enter')buscarTutorial();});
+  function buscarYT(){
+    const q=document.getElementById('ytSearch').value.trim();
+    if(!q)return;
+    window.open(`https://www.youtube.com/results?search_query=${encodeURIComponent(q)}`,'_blank');
+  }
+  document.getElementById('ytSearch').addEventListener('keydown',e=>{if(e.key==='Enter')buscarYT();});
+  function setStars(n){
+    document.querySelectorAll('#starsSelect span').forEach((s,i)=>s.classList.toggle('active',i<n));
+  }
+</script>
+</body>
+</html>
